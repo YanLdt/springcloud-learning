@@ -1,0 +1,16 @@
+server:
+  port: 8006
+spring:
+  application:
+    name: hystrix-service
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8001/eureka/
+
+# user-service的调用路径
+service-url:
+  user-service: http://user-service
+

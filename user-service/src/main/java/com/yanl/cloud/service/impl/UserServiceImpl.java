@@ -64,5 +64,6 @@ public class UserServiceImpl implements UserService {
         userList = new ArrayList<>();
         userList.add(new User(1L, "ly", "5211"));
         userList.add(new User(2L, "zy", "5211"));
+        userList.add(new User(3L, "lyzzy", "5211"));
     }
 }

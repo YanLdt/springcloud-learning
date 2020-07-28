@@ -2,6 +2,7 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
@@ -13,6 +14,7 @@
         <module name="learning" />
         <module name="eureka-server" />
         <module name="user-service" />
+        <module name="hystrix-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -21,6 +23,7 @@
       <module name="eureka-client" options="-parameters" />
       <module name="eureka-security-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="hystrix-service" options="-parameters" />
       <module name="ribbon-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
