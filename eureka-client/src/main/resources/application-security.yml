@@ -1,0 +1,14 @@
+#配置文件中需要修改注册中心地址格式
+# http://${username}:${password}@${hostname}:${port}/eureka/
+
+server:
+  port: 9003
+spring:
+  application:
+    name: eureka-client
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://ly:5211@localhost:8004/eureka/

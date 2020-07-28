@@ -1,0 +1,13 @@
+server:
+  port: 8003
+spring:
+  application:
+    name: enreka-server
+eureka:
+  instance:
+    hostname: replica2
+  client:
+    service-url:
+      defaultZone: http://replica1:8002/eureka/
+    fetch-registry: true
+    register-with-eureka: true
