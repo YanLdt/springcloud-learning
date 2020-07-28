@@ -13,7 +13,9 @@
         <module name="ribbon-service" />
         <module name="learning" />
         <module name="eureka-server" />
+        <module name="hystrix-dashboard" />
         <module name="user-service" />
+        <module name="turbine-service" />
         <module name="hystrix-service" />
       </profile>
     </annotationProcessing>
@@ -23,8 +25,10 @@
       <module name="eureka-client" options="-parameters" />
       <module name="eureka-security-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="hystrix-dashboard" options="-parameters" />
       <module name="hystrix-service" options="-parameters" />
       <module name="ribbon-service" options="-parameters" />
+      <module name="turbine-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

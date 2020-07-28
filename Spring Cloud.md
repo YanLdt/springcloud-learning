@@ -1446,3 +1446,226 @@ hystrix:
 - HystrixComandKey对应@HystrixCommand中的commandKey属性；
 - HystrixCollapserKey对应@HystrixCollapser注解中的collapserKey属性；
 - HystrixThreadPoolKey对应@HystrixCommand中的threadPoolKey属性。
+
+# Hystrix Dashboard：断路器执行监控
+
+## 简介
+
+> Hystrix Dashboard 是Spring Cloud中查看Hystrix实例执行情况的一种仪表盘组件，支持查看单个实例和查看集群实例。Hystrix提供了Hystrix Dashboard来实时监控HystrixCommand方法的执行情况。 Hystrix Dashboard可以有效地反映出每个Hystrix实例的运行情况，帮助我们快速发现系统中的问题，从而采取对应措施。
+
+## Hystrix 单个实例监控
+
+### 创建hystrix-dashboard模块
+
+- 在pom.xml中添加相关依赖：
+
+  ```xml
+   <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-actuator</artifactId>
+          </dependency>
+  ```
+
+- 在application.yml进行配置：
+
+  ```yaml
+  server:
+    port: 8007
+  spring:
+    application:
+      name: hystrix-dashboard
+  eureka:
+    client:
+      fetch-registry: true
+      register-with-eureka: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  ```
+
+- 在启动类上添加@EnableHystrixDashboard来启用监控功能：
+
+  ```java
+  @EnableDiscoveryClient
+  @EnableHystrixDashboard
+  @SpringBootApplication
+  public class HystrixDashboardApplication {
+  
+      public static void main(String[] args) {
+          SpringApplication.run(HystrixDashboardApplication.class, args);
+      }
+      
+  }
+  ```
+
+### 启动相关服务
+
+> 启动如下服务：eureka-server、user-service、hystrix-service、hystrix-dashboard。
+
+### Hystrix实例监控
+
+- 访问Hystrix Dashboard：http://localhost:8007/hystrix
+
+  ![img](E:\ly\springcloud-learning\Spring Cloud.assets\16d)
+
+- 还有一点值得注意的是，被监控的hystrix-service服务需要开启Actuator的hystrix.stream端点，配置信息如下：
+
+  ```yaml
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'hystrix.stream'
+  ```
+
+- 同时由于Spring2.X.X版本，需要在被监控服务中添加路径，而且由于原因是spring cloud版本升级后出现的BUG，需要修改dashboard源码见链接https://www.cnblogs.com/jinjiyese153/p/13214629.html
+
+  ```java
+  /**
+       * springboot 版本如果是2.0则需要添加 ServletRegistrationBean
+       * 因为springboot的默认路径不是 "/hystrix.stream"
+       * @return
+       */
+      @Bean
+      public ServletRegistrationBean getServlet() {
+          HystrixMetricsStreamServlet streamServlet = new HystrixMetricsStreamServlet();
+          ServletRegistrationBean registrationBean = new ServletRegistrationBean(streamServlet);
+          registrationBean.setLoadOnStartup(1);
+          registrationBean.addUrlMappings("/hystrix.stream");
+          registrationBean.setName("HystrixMetricsStreamServlet");
+          return registrationBean;
+      }
+  ```
+
+- 修改源码
+
+  - 在maven本地仓库中找到`spring-cloud-netflix-hystrix-dashboard-2.2.3.RELEASE.jar`文件
+  - 用解压缩工具打开jar包，找到`templates.hystrix/monitor.ftlh`并打开
+  - 将文件里所有的`$(window).load(function() {`修改为`$(window).on("load", function() {`，保存即可
+
+- ![image-20200728175343974](E:\ly\springcloud-learning\Spring Cloud.assets\hystrixdashboard)
+
+- 访问几次接口
+
+  ![image-20200728175439746](E:\ly\springcloud-learning\Spring Cloud.assets\dashboardshow)
+
+- 可以发现曾经我们在@HystrixCommand中添加的commandKey和threadPoolKey属性显示在上面
+
+### Hystrix Dashboard 图表解读
+
+> 图表解读如下，需要注意的是，小球代表该实例健康状态及流量情况，颜色越显眼，表示实例越不健康，小球越大，表示实例流量越大。曲线表示Hystrix实例的实时流量变化。
+
+![img](E:\ly\springcloud-learning\Spring Cloud.assets\tubiaojiedu)
+
+## Hystrix 集群实例监控
+
+> 这里我们使用Turbine来聚合hystrix-service服务的监控信息，然后我们的hystrix-dashboard服务就可以从Turbine获取聚合好的监控信息展示给我们了。
+
+### 创建turbine-service模块
+
+- 在pom.xml中添加相关依赖：
+
+  ```xml
+  <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-netflix-turbine</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-actuator</artifactId>
+          </dependency>
+  ```
+
+- 在application.yml进行配置，主要是添加了Turbine相关配置：
+
+  ```yaml
+  server:
+    port: 8009
+  spring:
+    application:
+      name: turbine-service
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+      register-with-eureka: true
+      fetch-registry: true
+  turbine:
+    app-config: hystrix-service #指定需要收集信息的服务名称
+    combine-host-port: true # 以主机和端口号来区分服务
+    cluster-name-expression: new String('default') # 指定服务所属集群
+  ```
+
+- 在启动类上添加@EnableTurbine来启用Turbine相关功能：
+
+  ```java
+  package com.yanl.cloud;
+  
+  import org.springframework.boot.SpringApplication;
+  import org.springframework.boot.autoconfigure.SpringBootApplication;
+  import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+  import org.springframework.cloud.netflix.turbine.EnableTurbine;
+  
+  @EnableDiscoveryClient
+  @EnableTurbine
+  @SpringBootApplication
+  public class TurbineServiceApplication {
+  
+      public static void main(String[] args) {
+          SpringApplication.run(TurbineServiceApplication.class, args);
+      }
+  
+  }
+  ```
+
+### 启动相关服务
+
+> 使用application-replica1.yml配置再启动一个hystrix-service服务，启动turbine-service服务，此时注册中心显示如下。
+
+- application-replica1.yml
+
+  ```yaml
+  server:
+    port: 8008
+  spring:
+    application:
+      name: hystrix-service
+  eureka:
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  
+  service-url:
+    user-service: http://user-service
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'hystrix.stream'
+  ```
+
+### Hystrix集群监控
+
+- 访问Hystrix Dashboard: http://localhost:8007/hystrix
+
+- 添加集群监控地址，需要注意的是我们需要添加的是turbine-service的监控端点地址：即http://localhost:8009/turbine.stream
+
+- 调用几次hystrix-service的接口
+
+  ![image-20200728181015794](E:\ly\springcloud-learning\Spring Cloud.assets\turbineshow)
+
+- 可以看到Hystrix实例数量变成了两个。
+
