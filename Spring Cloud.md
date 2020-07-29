@@ -2003,9 +2003,9 @@ logging:
 
 ### Feign中的Ribbon配置
 
-在Feign中配置Ribbon可以直接使用Ribbon的配置，具体可以参考Ribbon配置
+在Feign中配置Ribbon可以直接使用Ribbon的配置，具体可以参考[Ribbon配置](#Ribbon的常用配置)
 
 ### Feign中的Hystrix配置
 
-在Feign中配置Hystrix可以直接使用Hystrix的配置，具体可以参考Hystrix配置
+在Feign中配置Hystrix可以直接使用Hystrix的配置，具体可以参考[Hystrix配置](#Hystrix的常用配置)
 
