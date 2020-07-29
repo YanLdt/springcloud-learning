@@ -2349,3 +2349,395 @@ zuul:
       disable: false #控制是否启用过滤器
 ```
 
+# Spring Cloud Config：外部集中化配置管理
+
+## Spring Cloud Config 简介
+
+> Spring Cloud Config 可以为微服务架构中的应用提供集中化的外部配置支持，它分为服务端和客户端两个部分，服务端被称为分布式配置中心，它是个独立的应用，可以从配置仓库获取配置信息并提供给客户端使用。客户端可以通过配置中心来获取配置信息，在启动时加载配置。Spring Cloud Config 的配置中心默认采用Git来存储配置信息，所以天然就支持配置信息的版本管理，并且可以使用Git客户端来方便地管理和访问配置信息。
+
+## 在Git仓库中准备配置信息
+
+> Git仓库地址为 https://github.com/YanLdt/springcloud-config.git
+
+![image-20200729175432882](Spring Cloud.assets/git仓库)
+
+### master分支下的配置信息
+
+- config-dev.yml
+
+  ```yaml
+  config:
+    info: "config info for dev(master)"
+  ```
+
+- config-test.yml
+
+  ```yaml
+  config:
+    info: "config info for test(master)"
+  ```
+
+- config-prod.yml
+
+  ```yaml
+  config:
+    info: "config info for prod(master)"
+  ```
+
+### dev分支下的配置信息
+- config-dev.yml
+
+  ```yaml
+  config:
+    info: "config info for dev(dev)"
+  ```
+
+- config-test.yml
+
+  ```yaml
+  config:
+    info: "config info for test(dev)"
+  ```
+
+- config-prod.yml
+
+  ```yaml
+  config:
+    info: "config info for prod(dev)"
+  ```
+
+## 创建config-server模块
+
+- 在pom.xml中添加相关依赖
+
+  ```xml
+  <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-config-server</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+          </dependency>
+  ```
+
+- 在application.yml中进行配置
+
+  ```yaml
+  server:
+    port: 8012
+  spring:
+    application:
+      name: config-server
+    cloud:
+      config:
+        server:
+          git: # 配置存储信息的git仓库 注意要使用https方式
+            uri: https://github.com/YanLdt/springcloud-config.git
+            username: YanLdt
+            password: datouwudi233
+            clone-on-start: true # 开启启动时自动从git获取配置
+  #          search-paths: '{application}'
+  eureka:
+    client:
+      fetch-registry: true
+      register-with-eureka: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  ```
+
+- 在启动类上添加@EnableConfigServer注解来启用配置中心功能
+
+  ```java
+  package com.yanl.cloud;
+  
+  import org.springframework.boot.SpringApplication;
+  import org.springframework.boot.autoconfigure.SpringBootApplication;
+  import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+  import org.springframework.cloud.config.server.EnableConfigServer;
+  
+  @EnableDiscoveryClient
+  @EnableConfigServer
+  @SpringBootApplication
+  public class ConfigServerApplication {
+  
+      public static void main(String[] args) {
+          SpringApplication.run(ConfigServerApplication.class, args);
+      }
+  
+  }
+  ```
+
+
+  ### 通过config-server获取配置信息
+
+#### 获取配置文件信息的访问格式
+
+  ```
+  # 获取配置信息
+  /{label}/{application}-{profile}
+  # 获取配置文件信息
+  /{label}/{application}-{profile}.yml
+  ```
+
+  #### 占位符相关解释
+
+- application：代表应用名称，默认为配置文件中的spring.application.name，如果配置了spring.cloud.config.name，则为该名称；
+- label：代表分支名称，对应配置文件中的spring.cloud.config.label；
+- profile：代表环境名称，对应配置文件中的spring.cloud.config.profile。
+
+#### 获取配置文件信息
+
+- 访问 http://localhost:8014/dev/config-dev.yml 
+
+  ![image-20200729180421466](Spring Cloud.assets/configinfo.png)
+
+
+
+
+
+## 创建config-client模块
+
+-  在pom.xml中添加相关依赖
+
+  ```xml
+  <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-config</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+  </dependency>
+  ```
+
+- 在bootstrap.yml中进行配置
+
+  ```yaml
+  server:
+    port: 8013
+  spring:
+    application:
+      name: config-client
+    cloud:
+      config: # Config客户端配置
+        profile: dev # 启用配置后缀名称
+        label: dev # 分支名称
+        uri: http://localhost:8014/ # 配置中心地址
+        name: config #配置文件名称
+        username: ly #配置安全中心账户密码
+        password: 5211
+  eureka:
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'refresh'
+  ```
+
+
+### 添加ConfigClientController类用于获取配置
+
+  ```java
+  package com.yanl.cloud.controller;
+  
+  import org.springframework.beans.factory.annotation.Value;
+  import org.springframework.cloud.context.config.annotation.RefreshScope;
+  import org.springframework.web.bind.annotation.GetMapping;
+  import org.springframework.web.bind.annotation.RestController;
+  
+  @RestController
+  @RefreshScope
+  public class ConfigClientController {
+  
+      @Value("${config.info}")
+      private String configInfo;
+  
+      @GetMapping("/getConfigInfo")
+      public String getConfigInfo(){
+          return configInfo;
+      }
+  }
+  ```
+
+  ### 从配置中心获取配置
+
+- 访问接口即可获取配置信息。
+
+### 获取子目录下的配置
+
+> 不仅可以把每个项目的配置放在不同的Git仓库存储，也可以在一个Git仓库中存储多个项目的配置，此时就会用到在子目录中搜索配置信息的配置。
+
+需要在config-server中添加相关配置，用于搜索子目录中的配置，这里我们用到了application占位符，表示对于不同的应用，我们从对应应用名称的子目录中搜索配置，比如config子目录中的配置对应config应用；配置在服务端
+
+```yaml
+spring:
+  cloud:
+    config:
+      server:
+        git: 
+          search-paths: '{application}' #配置在服务端
+```
+
+### 刷新配置
+
+> 当Git仓库中的配置信息更改后，我们可以通过SpringBoot Actuator的refresh端点来刷新客户端配置信息，以下更改都需要在config-client中进行。
+
+- 在pom.xml中添加Actuator的依赖：
+
+  ```xml
+  <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-actuator</artifactId>
+  </dependency>
+  ```
+
+- 在bootstrap.yml中开启refresh端点：
+
+  ```yaml
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'refresh'
+  ```
+
+- 在ConfigClientController类添加@RefreshScope注解用于刷新配置：
+
+- 重新启动config-client后，调用refresh端点进行配置刷新：post 请求 http://localhost:8013/actuator/refresh
+
+  ![image-20200729181500574](Spring Cloud.assets/post.png)
+
+## 配置中心添加安全认证
+
+> 通过整合SpringSecurity来为配置中心添加安全认证。
+
+### 创建config-security-server模块
+
+- 在pom.xml中添加相关依赖：
+
+  ```xml
+  <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-config-server</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+  </dependency>
+  ```
+
+- 在application.yml中进行配置：
+
+  添加用户和密码
+
+  ```yaml
+  server:
+    port: 8014
+  spring:
+    application:
+      name: config-security-server
+    cloud:
+      config:
+        server:
+          git: # 配置存储信息的git仓库
+            uri: https://github.com/YanLdt/springcloud-config.git
+            username: YanLdt
+            password: datouwudi233
+            clone-on-start: true # 开启启动时自动从git获取配置
+  #          search-paths: '{application}'
+    security:
+      user:
+        name: ly
+        password: 5211
+  eureka:
+    client:
+      fetch-registry: true
+      register-with-eureka: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  ```
+
+### 修改config-client的配置
+
+- 添加bootstrap-security.yml配置文件，主要是配置了配置中心的用户名和密码：
+
+  ```yaml
+  server:
+    port: 8013
+  spring:
+    application:
+      name: config-client
+    cloud:
+      config: # Config客户端配置
+        profile: dev # 启用配置后缀名称
+        label: dev # 分支名称
+        uri: http://localhost:8014/ # 配置中心地址
+        name: config #配置文件名称
+        username: ly #配置安全中心账户密码
+        password: 5211
+  eureka:
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'refresh'
+  ```
+
+## config-sever集群搭建
+
+- 启动两个config-server
+
+- 添加config-client的配置文件bootstrap-cluster.yml，主要是添加了从注册中心获取配置中心地址的配置并去除了配置中心uri的配置：
+
+  ```yaml
+  server:
+    port: 8016
+  spring:
+    application:
+      name: config-client
+    cloud:
+      config: # Config客户端配置
+        profile: dev # 启用配置后缀名称
+        label: dev # 分支名称
+  #      uri: http://localhost:8014/ # 配置中心地址
+        name: config #配置文件名称
+        discovery: # 表示从注册中心获取配置中心的地址
+          enabled: true
+          service-id: config-server
+  #      username: ly #配置安全中心账户密码
+  #      password: 5211
+  eureka:
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'refresh'
+  
+  ```
+
+- 以bootstrap-cluster.yml启动config-client服务
+
+- client将会在注册中心搜索配置中心地址。
+
+
+

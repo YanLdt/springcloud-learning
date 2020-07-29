@@ -1,0 +1,27 @@
+server:
+  port: 8016
+spring:
+  application:
+    name: config-client
+  cloud:
+    config: # Config客户端配置
+      profile: dev # 启用配置后缀名称
+      label: dev # 分支名称
+#      uri: http://localhost:8014/ # 配置中心地址
+      name: config #配置文件名称
+      discovery: # 表示从注册中心获取配置中心的地址
+        enabled: true
+        service-id: config-server
+#      username: ly #配置安全中心账户密码
+#      password: 5211
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8001/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'refresh'

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0b67b6db-3d40-4db0-b2c7-b293f986b51d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/zuul-proxy/src/main/java/com/yanl/cloud/filter/PreLogFilter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-client/src/main/java/com/yanl/cloud/config/SwaggerConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-client/src/main/java/com/yanl/cloud/controller/ConfigClientController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config-client/src/main/resources/bootstrap-cluster.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
@@ -42,6 +44,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ExpandSpringBootJavaOptionsPanel" value="true" />
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
@@ -51,7 +54,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/feign-service/src/main/java/com/yanl/cloud" />
-    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+    <property name="settings.editor.selected.configurable" value="spring" />
   </component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
@@ -78,7 +81,59 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ZuulProxyApplication">
+  <component name="RunManager" selected="Spring Boot.ConfigClientApplication-cluster">
+    <configuration name="ConfigClientApplication-cluster" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="config-client" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConfigClientApplication" />
+      <option name="PROGRAM_PARAMETERS" value="--spring.cloud.bootstrap.name=bootstrap-cluster" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <additionalParameters>
+        <param>
+          <option name="enabled" value="true" />
+          <option name="name" value="server.port" />
+          <option name="value" value="8016" />
+        </param>
+      </additionalParameters>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigClientApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="config-client" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConfigClientApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigSecurityServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="config-security-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConfigSecurityServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServerApplication-8015" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="config-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConfigServerApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <additionalParameters>
+        <param>
+          <option name="enabled" value="true" />
+          <option name="name" value="server.port" />
+          <option name="value" value="8015" />
+        </param>
+      </additionalParameters>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="config-server" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConfigServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="EurekaClientApplication-replica" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="eureka-client" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.EurekaClientApplication" />
@@ -211,6 +266,7 @@
     </configuration>
     <list>
       <item itemvalue="Spring Boot.EurekaClientApplication" />
+      <item itemvalue="Spring Boot.ConfigClientApplication-cluster" />
       <item itemvalue="Spring Boot.FeignServiceApplication" />
       <item itemvalue="Spring Boot.EurekaClientApplication-replica" />
       <item itemvalue="Spring Boot.EurekaClientApplication-security" />
@@ -226,13 +282,17 @@
       <item itemvalue="Spring Boot.HystrixDashboardApplication" />
       <item itemvalue="Spring Boot.TurbineServiceApplication" />
       <item itemvalue="Spring Boot.ZuulProxyApplication" />
+      <item itemvalue="Spring Boot.ConfigServerApplication" />
+      <item itemvalue="Spring Boot.ConfigServerApplication-8015" />
+      <item itemvalue="Spring Boot.ConfigClientApplication" />
+      <item itemvalue="Spring Boot.ConfigSecurityServerApplication" />
     </list>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
       <list>
         <serviceView>
-          <option name="contentProportion" value="0.2609649" />
+          <option name="contentProportion" value="0.15570176" />
           <treeState>
             <expand>
               <path>
@@ -270,7 +330,7 @@
       <workItem from="1595898316441" duration="6296000" />
       <workItem from="1595906345353" duration="11161000" />
       <workItem from="1595923610770" duration="7665000" />
-      <workItem from="1595984873786" duration="13257000" />
+      <workItem from="1595984873786" duration="22378000" />
     </task>
     <servers />
   </component>
@@ -278,10 +338,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="269" y="102" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595928975077">
+    <state x="309" y="179" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596016254666">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="269" y="102" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.870@0.0.1440.870" timestamp="1595928975077" />
+    <state x="309" y="179" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.870@0.0.1440.870" timestamp="1596016254666" />
     <state x="525" y="144" key="#com.intellij.ide.util.MemberChooser" timestamp="1596003798819">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
@@ -290,38 +350,38 @@
       <screen x="0" y="0" width="1440" height="870" />
     </state>
     <state x="500" y="189" key="FileChooserDialogImpl/0.0.1440.870@0.0.1440.870" timestamp="1595834030745" />
-    <state width="1010" height="256" key="GridCell.Tab.0.bottom" timestamp="1596004598746">
+    <state width="1010" height="233" key="GridCell.Tab.0.bottom" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.0.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596004598746" />
-    <state width="1010" height="256" key="GridCell.Tab.0.center" timestamp="1596004598745">
+    <state width="1010" height="233" key="GridCell.Tab.0.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
+    <state width="1010" height="233" key="GridCell.Tab.0.center" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.0.center/0.0.1440.870@0.0.1440.870" timestamp="1596004598745" />
-    <state width="1010" height="256" key="GridCell.Tab.0.left" timestamp="1596004598745">
+    <state width="1010" height="233" key="GridCell.Tab.0.center/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
+    <state width="1010" height="233" key="GridCell.Tab.0.left" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.0.left/0.0.1440.870@0.0.1440.870" timestamp="1596004598745" />
-    <state width="1010" height="256" key="GridCell.Tab.0.right" timestamp="1596004598745">
+    <state width="1010" height="233" key="GridCell.Tab.0.left/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
+    <state width="1010" height="233" key="GridCell.Tab.0.right" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.0.right/0.0.1440.870@0.0.1440.870" timestamp="1596004598745" />
-    <state width="1010" height="256" key="GridCell.Tab.1.bottom" timestamp="1596004598746">
+    <state width="1010" height="233" key="GridCell.Tab.0.right/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
+    <state width="1010" height="233" key="GridCell.Tab.1.bottom" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.1.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596004598746" />
-    <state width="1010" height="256" key="GridCell.Tab.1.center" timestamp="1596004598746">
+    <state width="1010" height="233" key="GridCell.Tab.1.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
+    <state width="1010" height="233" key="GridCell.Tab.1.center" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.1.center/0.0.1440.870@0.0.1440.870" timestamp="1596004598746" />
-    <state width="1010" height="256" key="GridCell.Tab.1.left" timestamp="1596004598746">
+    <state width="1010" height="233" key="GridCell.Tab.1.center/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
+    <state width="1010" height="233" key="GridCell.Tab.1.left" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.1.left/0.0.1440.870@0.0.1440.870" timestamp="1596004598746" />
-    <state width="1010" height="256" key="GridCell.Tab.1.right" timestamp="1596004598746">
+    <state width="1010" height="233" key="GridCell.Tab.1.left/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
+    <state width="1010" height="233" key="GridCell.Tab.1.right" timestamp="1596016260142">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1010" height="256" key="GridCell.Tab.1.right/0.0.1440.870@0.0.1440.870" timestamp="1596004598746" />
+    <state width="1010" height="233" key="GridCell.Tab.1.right/0.0.1440.870@0.0.1440.870" timestamp="1596016260142" />
     <state width="1010" height="252" key="GridCell.Tab.2.bottom" timestamp="1595918630103">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
@@ -338,10 +398,10 @@
       <screen x="0" y="0" width="1440" height="870" />
     </state>
     <state width="1010" height="252" key="GridCell.Tab.2.right/0.0.1440.870@0.0.1440.870" timestamp="1595918630103" />
-    <state x="221" y="76" key="SettingsEditor" timestamp="1595923887695">
+    <state x="221" y="76" key="SettingsEditor" timestamp="1596010261595">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="221" y="76" key="SettingsEditor/0.0.1440.870@0.0.1440.870" timestamp="1595923887695" />
+    <state x="221" y="76" key="SettingsEditor/0.0.1440.870@0.0.1440.870" timestamp="1596010261595" />
     <state x="400" y="258" key="com.intellij.ide.util.TipDialog" timestamp="1595984873522">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
@@ -350,13 +410,13 @@
       <screen x="0" y="0" width="1440" height="870" />
     </state>
     <state x="396" y="34" width="647" height="801" key="find.popup/0.0.1440.870@0.0.1440.870" timestamp="1595927921598" />
-    <state x="94" y="129" key="new project wizard" timestamp="1595994650398">
+    <state x="94" y="129" key="new project wizard" timestamp="1596014815457">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="94" y="129" key="new project wizard/0.0.1440.870@0.0.1440.870" timestamp="1595994650398" />
-    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup" timestamp="1595990976973">
+    <state x="94" y="129" key="new project wizard/0.0.1440.870@0.0.1440.870" timestamp="1596014815457" />
+    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup" timestamp="1596011634738">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup/0.0.1440.870@0.0.1440.870" timestamp="1595990976973" />
+    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup/0.0.1440.870@0.0.1440.870" timestamp="1596011634738" />
   </component>
 </project>
