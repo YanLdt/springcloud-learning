@@ -73,7 +73,7 @@
 
 - 运行完成后访问地址http://localhost:8001/可以看到Eureka注册中心的界面
 
-  ![image-20200727135843326](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\eureka-server)
+  ![](Spring Cloud.assets/eureka-server.png)
 
 ## 搭建Eureka客户端
 
@@ -122,7 +122,7 @@
 
 - 运行eureka-client
 
-  ![image-20200727140125526](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\eureka-client)
+  ![](Spring Cloud.assets/eureka-client.png)
 
 ## 搭建Eureka注册中心集群
 
@@ -153,7 +153,7 @@
 - 给eureka-sever添加配置文件application-replica2.yml配置第二个注册中心
 
   ```yaml
-  server:
+  ![image-20200727140627149](H:/OldHardDrive/ly/java/springcloud/Spring Cloud.assets/image-20200727140627149.png)server:
     port: 8003
   spring:
     application:
@@ -177,11 +177,9 @@
   127.0.0.1 replica2
   ```
 
-- ### 运行Eureka注册中心集群
+- ![](Spring Cloud.assets/replica1.png)
 
-  ![image-20200727140553830](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\replica1)
-
-  ![image-20200727140627149](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\replica2)
+  ![](Spring Cloud.assets/replica2.png)
 
 - 修改Eureka-client，让其连接到集群
 
@@ -286,7 +284,7 @@
 
 - 以application-security.yml配置运行eureka-client，可以在注册中心界面看到eureka-client已经成功注册
 
-![image-20200727141434842](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\security-client)
+![image-20200727141434842](Spring Cloud.assets/security-client.png)
 
 
 
@@ -840,19 +838,19 @@ public CommonResult delete(@PathVariable Long id) {
 
 - 启动两个user-service模块
 
-  ![image-20200727173232413](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\multi-service.png)
+  ![image-20200727173232413](Spring Cloud.assets/multi-service.png)
 
 - 此时运行的服务
 
-  ![image-20200727173322084](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\servicerunning)
+  ![image-20200727173322084](Spring Cloud.assets/servicerunning.png)
 
 - swagger接口测试
 
-  ![image-20200727173357800](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\swagger测试)
+  ![image-20200727173357800](Spring Cloud.assets/swagger测试.png)
 
-  ![image-20200727173540455](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\service1)
+  ![image-20200727173540455](Spring Cloud.assets/service1.png)
 
-  ![image-20200727173606447](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\service2)
+  ![image-20200727173606447](Spring Cloud.assets/service2.png)
 
 - 可以看到两个服务均被调用，交替打印日志
 
@@ -1107,7 +1105,7 @@ user-service:
 
 - 关闭user-service服务重新测试该接口，发现已经发生了服务降级：
 
-  ![image-20200728151101999](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\jiangji)
+  ![image-20200728151101999](Spring Cloud.assets/降级.png)
 
 ## @HystrixCommand详解
 
@@ -1191,9 +1189,9 @@ user-service:
 
 - 调用接口进行测试
 
-  ![image-20200728151835180](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\id=1)
+  ![image-20200728151835180](Spring Cloud.assets/id=1.png)
 
-  ![image-20200728151912305](H:\OldHardDrive\ly\java\springcloud\Spring Cloud.assets\id=2)
+  ![image-20200728151912305](Spring Cloud.assets/id=2.png)
 
 ## Hystrix的请求缓存
 
@@ -1513,7 +1511,7 @@ hystrix:
 
 - 访问Hystrix Dashboard：http://localhost:8007/hystrix
 
-  ![img](E:\ly\springcloud-learning\Spring Cloud.assets\16d)
+  ![img](Spring Cloud.assets/16d.png)
 
 - 还有一点值得注意的是，被监控的hystrix-service服务需要开启Actuator的hystrix.stream端点，配置信息如下：
 
@@ -1550,11 +1548,11 @@ hystrix:
   - 用解压缩工具打开jar包，找到`templates.hystrix/monitor.ftlh`并打开
   - 将文件里所有的`$(window).load(function() {`修改为`$(window).on("load", function() {`，保存即可
 
-- ![image-20200728175343974](E:\ly\springcloud-learning\Spring Cloud.assets\hystrixdashboard)
+- ![image-20200728175343974](Spring Cloud.assets/hystrixdashboard.png)
 
 - 访问几次接口
 
-  ![image-20200728175439746](E:\ly\springcloud-learning\Spring Cloud.assets\dashboardshow)
+  ![image-20200728175439746](Spring Cloud.assets/dashboardshow.png)
 
 - 可以发现曾经我们在@HystrixCommand中添加的commandKey和threadPoolKey属性显示在上面
 
@@ -1562,7 +1560,7 @@ hystrix:
 
 > 图表解读如下，需要注意的是，小球代表该实例健康状态及流量情况，颜色越显眼，表示实例越不健康，小球越大，表示实例流量越大。曲线表示Hystrix实例的实时流量变化。
 
-![img](E:\ly\springcloud-learning\Spring Cloud.assets\tubiaojiedu)
+![img](Spring Cloud.assets/hystrix图表截图.png)
 
 ## Hystrix 集群实例监控
 
@@ -1665,7 +1663,7 @@ hystrix:
 
 - 调用几次hystrix-service的接口
 
-  ![image-20200728181015794](E:\ly\springcloud-learning\Spring Cloud.assets\turbineshow)
+  ![image-20200728181015794](Spring Cloud.assets/turbineshow.png)
 
 - 可以看到Hystrix实例数量变成了两个。
 
