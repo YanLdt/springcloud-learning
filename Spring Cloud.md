@@ -1667,3 +1667,345 @@ hystrix:
 
 - 可以看到Hystrix实例数量变成了两个。
 
+# Spring Cloud OpenFeign：基于Ribbon和Hystrix的声明式服务调用
+
+## Feign简介
+
+> Spring Cloud OpenFeign 是声明式的服务调用工具，它整合了Ribbon和Hystrix，拥有负载均衡和服务容错功能。Feign是声明式的服务调用工具，我们只需创建一个接口并用注解的方式来配置它，就可以实现对某个服务接口的调用，简化了直接使用RestTemplate来调用服务接口的开发量。Feign具备可插拔的注解支持，同时支持Feign注解、JAX-RS注解及SpringMvc注解。当使用Feign时，Spring Cloud集成了Ribbon和Eureka以提供负载均衡的服务调用及基于Hystrix的服务容错保护功能。
+
+## 创建feign-service模块
+
+-  在pom.xml中添加相关依赖
+
+  ```xml
+  <properties>
+          <java.version>1.8</java.version>
+          <spring-cloud.version>Hoxton.SR6</spring-cloud.version>
+      </properties>
+  
+      <dependencyManagement>
+          <dependencies>
+              <dependency>
+                  <groupId>org.springframework.cloud</groupId>
+                  <artifactId>spring-cloud-dependencies</artifactId>
+                  <version>${spring-cloud.version}</version>
+                  <type>pom</type>
+                  <scope>import</scope>
+              </dependency>
+          </dependencies>
+      </dependencyManagement>
+  
+  	<dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-openfeign</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-web</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <optional>true</optional>
+          </dependency>
+          <!--集成swagger以及UI-->
+          <dependency>
+              <groupId>io.springfox</groupId>
+              <artifactId>springfox-swagger2</artifactId>
+              <version>2.6.1</version>
+          </dependency>
+  
+          <dependency>
+              <groupId>io.springfox</groupId>
+              <artifactId>springfox-swagger-ui</artifactId>
+              <version>2.6.1</version>
+          </dependency>
+  ```
+
+- 在application.yml中进行配置
+
+  ```yaml
+  server:
+    port: 8010
+  spring:
+    application:
+      name: feign-service
+  eureka:
+    client:
+      fetch-registry: true
+      register-with-eureka: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  feign:
+    hystrix:
+      enabled: true # 在feign中开启hystrix
+  logging:
+    level:
+      com.yanl.cloud.service.UserService: debug
+  ```
+
+- 在启动类上添加@EnableFeignClients注解来启用Feign的客户端功能
+
+  ```java
+  package com.yanl.cloud;
+  
+  import org.springframework.boot.SpringApplication;
+  import org.springframework.boot.autoconfigure.SpringBootApplication;
+  import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+  import org.springframework.cloud.openfeign.EnableFeignClients;
+  import springfox.documentation.swagger2.annotations.EnableSwagger2;
+  
+  @EnableDiscoveryClient
+  @EnableFeignClients
+  @EnableSwagger2
+  @SpringBootApplication
+  public class FeignServiceApplication {
+  
+      public static void main(String[] args) {
+          SpringApplication.run(FeignServiceApplication.class, args);
+      }
+  
+  }
+  ```
+
+- 添加UserService接口完成对user-service服务的接口绑定
+
+  我们通过@FeignClient注解实现了一个Feign客户端，其中的value为user-service表示这是对user-service服务的接口调用客户端。我们可以回想下user-service中的UserController，只需将其改为接口，保留原来的SpringMvc注释即可。
+
+  ```java
+  package com.yanl.cloud.service;
+  
+  import com.yanl.cloud.domain.CommonResult;
+  import com.yanl.cloud.domain.User;
+  import com.yanl.cloud.service.impl.UserFallbackService;
+  import org.springframework.cloud.openfeign.FeignClient;
+  import org.springframework.web.bind.annotation.*;
+  
+  @FeignClient(value = "user-service", fallback = UserFallbackService.class)
+  public interface UserService {
+      @PostMapping("/user/create")
+      CommonResult create(@RequestBody User user);
+  
+      @GetMapping("/user/{id}")
+      CommonResult<User> getUser(@PathVariable Long id);
+  
+      @GetMapping("/user/getUserByName")
+      CommonResult<User> getUserByName(@RequestParam String name);
+  
+      @PostMapping("/user/update")
+      CommonResult update(@RequestBody User user);
+  
+      @PostMapping("/user/delete/{id}")
+      CommonResult delete(@PathVariable Long id);
+  }
+  ```
+
+- 添加UserFeignController调用UserService实现服务调用
+
+  ```java
+  package com.yanl.cloud.controller;
+  
+  import com.yanl.cloud.domain.CommonResult;
+  import com.yanl.cloud.domain.User;
+  import com.yanl.cloud.service.UserService;
+  import org.springframework.beans.factory.annotation.Autowired;
+  import org.springframework.web.bind.annotation.*;
+  
+  @RestController
+  @RequestMapping("/user")
+  public class UserFeignController {
+  
+      @Autowired
+      private UserService userService;
+  
+      @GetMapping("/{id}")
+      public CommonResult getUser(@PathVariable Long id){
+          return userService.getUser(id);
+      }
+      @PostMapping("/create")
+      public CommonResult create(@RequestBody User user){
+          return userService.create(user);
+      }
+  
+      @GetMapping("/getUserByName")
+      public CommonResult<User> getUserByName(@RequestParam String name){
+          return userService.getUserByName(name);
+      }
+  
+      @PostMapping("/update")
+      public CommonResult update(@RequestBody User user){
+          return userService.update(user);
+      }
+  
+      @PostMapping("/delete/{id}")
+      public CommonResult delete(@PathVariable Long id){
+          return userService.delete(id);
+      }
+  }
+  ```
+
+  ## 负载均衡功能
+
+  ![image-20200729112036484](Spring Cloud.assets/feign-eureka.png)
+
+  多次调用接口可以发现两个user-service终端交替打印日志
+
+  ![image-20200729112153787](Spring Cloud.assets/feign-interface1.png)
+
+## Feign中的服务降级
+
+> Feign中的服务降级使用起来非常方便，只需要为Feign客户端定义的接口添加一个服务降级处理的实现类即可，下面我们为UserService接口添加一个服务降级实现类。
+
+### 添加服务降级实现类UserFallbackService
+
+> 需要注意的是它实现了UserService接口，并且对接口中的每个实现方法进行了服务降级逻辑的实现。
+
+```java
+package com.yanl.cloud.service.impl;
+
+import com.yanl.cloud.domain.CommonResult;
+import com.yanl.cloud.domain.User;
+import com.yanl.cloud.service.UserService;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class UserFallbackService implements UserService {
+    @Override
+    public CommonResult create(User user) {
+        User defaultUser = new User(-1L, "defaultUser", "123456");
+        return new CommonResult<>(defaultUser);
+    }
+
+    @Override
+    public CommonResult<User> getUser(Long id) {
+        User defaultUser = new User(-1L, "defaultUser", "123456");
+        return new CommonResult<>(defaultUser);
+    }
+
+
+    @Override
+    public CommonResult<User> getUserByName(String name) {
+        User defaultUser = new User(-1L, "defaultUser", "123456");
+        return new CommonResult<>(defaultUser);
+    }
+
+    @Override
+    public CommonResult update(User user) {
+        return new CommonResult("调用失败，服务被降级", 500);
+    }
+
+    @Override
+    public CommonResult delete(Long id) {
+        return new CommonResult("调用失败，服务被降级", 500);
+    }
+}
+```
+
+### 修改UserService接口，设置服务降级处理类为UserFallbackService
+
+```java
+@FeignClient(value = "user-service", fallback = UserFallbackService.class)
+```
+
+### 修改application.yml，开启Hystrix功能
+
+```yaml
+feign:
+  hystrix:
+    enabled: true # 在feign中开启hystrix
+```
+
+## 服务降级功能
+
+- 关闭两个user-service，调用接口测试，返回服务降级信息。
+
+  ![image-20200729112915636](Spring Cloud.assets/feign降级.png)
+
+## 日志打印功能
+
+> Feign提供了日志打印功能，我们可以通过配置来调整日志级别，从而了解Feign中Http请求的细节。
+
+### 日志级别
+
+- NONE：默认的，不显示任何日志；
+- BASIC：仅记录请求方法、URL、响应状态码及执行时间；
+- HEADERS：除了BASIC中定义的信息之外，还有请求和响应的头信息；
+- FULL：除了HEADERS中定义的信息之外，还有请求和响应的正文及元数据。
+
+### 通过配置开启更为详细的日志
+
+```java
+package com.yanl.cloud.config;
+
+import feign.Logger;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class FeignConfig {
+
+    @Bean
+    Logger.Level feignLoggerLevel(){
+        return Logger.Level.FULL;
+    }
+}
+```
+
+### 在application.yml中配置需要开启日志的Feign客户端
+
+> 配置UserService的日志级别为debug。
+
+```yaml
+logging:
+  level:
+    com.yanl.cloud.service.UserService: debug
+```
+
+调用接口可以看到日志
+
+```
+2020-07-29 10:57:54.547 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] <--- HTTP/1.1 200 (367ms)
+2020-07-29 10:57:54.548 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] connection: keep-alive
+2020-07-29 10:57:54.548 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] content-type: application/json
+2020-07-29 10:57:54.548 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] date: Wed, 29 Jul 2020 02:57:54 GMT
+2020-07-29 10:57:54.548 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] keep-alive: timeout=60
+2020-07-29 10:57:54.548 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] transfer-encoding: chunked
+2020-07-29 10:57:54.548 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] 
+2020-07-29 10:57:54.552 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] {"data":{"id":1,"username":"ly","password":"5211"},"msg":"操作成功","code":200}
+2020-07-29 10:57:54.552 DEBUG 25384 --- [-user-service-1] com.yanl.cloud.service.UserService       : [UserService#getUser] <--- END HTTP (83-byte body)
+```
+
+## Feign的常用配置
+
+### Feign自己的配置
+
+```yaml
+feign:
+  hystrix:
+    enabled: true #在Feign中开启Hystrix
+  compression:
+    request:
+      enabled: false #是否对请求进行GZIP压缩
+      mime-types: text/xml,application/xml,application/json #指定压缩的请求数据类型
+      min-request-size: 2048 #超过该大小的请求会被压缩
+    response:
+      enabled: false #是否对响应进行GZIP压缩
+logging:
+  level: #修改日志级别
+    com.macro.cloud.service.UserService: debug
+```
+
+### Feign中的Ribbon配置
+
+在Feign中配置Ribbon可以直接使用Ribbon的配置，具体可以参考Ribbon配置
+
+### Feign中的Hystrix配置
+
+在Feign中配置Hystrix可以直接使用Hystrix的配置，具体可以参考Hystrix配置
+

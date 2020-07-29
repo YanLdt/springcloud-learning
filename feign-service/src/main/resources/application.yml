@@ -1,0 +1,15 @@
+server:
+  port: 8010
+spring:
+  application:
+    name: feign-service
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8001/eureka/
+
+logging:
+  level:
+    com.yanl.cloud.service.UserService: debug
