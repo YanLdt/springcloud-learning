@@ -310,6 +310,10 @@ eureka:
     enable-self-preservation: false #关闭eureka服务端的保护机制
 ```
 
+---
+
+
+
 # Spring Cloud Ribbon：负载均衡的服务调用
 
 ## 摘要
@@ -1445,6 +1449,10 @@ hystrix:
 - HystrixCollapserKey对应@HystrixCollapser注解中的collapserKey属性；
 - HystrixThreadPoolKey对应@HystrixCommand中的threadPoolKey属性。
 
+---
+
+
+
 # Hystrix Dashboard：断路器执行监控
 
 ## 简介
@@ -1666,6 +1674,10 @@ hystrix:
   ![image-20200728181015794](Spring Cloud.assets/turbineshow.png)
 
 - 可以看到Hystrix实例数量变成了两个。
+
+---
+
+
 
 # Spring Cloud OpenFeign：基于Ribbon和Hystrix的声明式服务调用
 
@@ -2009,6 +2021,10 @@ logging:
 
 在Feign中配置Hystrix可以直接使用Hystrix的配置，具体可以参考[Hystrix配置](#Hystrix的常用配置)
 
+---
+
+
+
 # Spring Cloud Zuul：API网关服务
 
 ## Zuul简介
@@ -2348,6 +2364,10 @@ zuul:
     pre:
       disable: false #控制是否启用过滤器
 ```
+
+---
+
+
 
 # Spring Cloud Config：外部集中化配置管理
 
@@ -2739,5 +2759,211 @@ spring:
 
 - client将会在注册中心搜索配置中心地址。
 
+---
 
+
+
+# Spring Cloud Bus：消息总线
+
+## Spring Cloud Bus 简介
+
+Spring Cloud Bus 使用轻量级的消息代理来连接微服务架构中的各个服务，可以将其用于广播状态更改（例如配置中心配置更改）或其他管理指令。
+
+我们通常会使用消息代理来构建一个主题，然后把微服务架构中的所有服务都连接到这个主题上去，当我们向该主题发送消息时，所有订阅该主题的服务都会收到消息并进行消费。使用 Spring Cloud Bus 可以方便地构建起这套机制，所以 Spring Cloud Bus 又被称为消息总线。Spring Cloud Bus 配合 Spring Cloud Config 使用可以实现配置的动态刷新。目前  Spring Cloud Bus 支持两种消息代理：RabbitMQ 和 Kafka
+
+## RabbitMQ的安装
+
+- 安装Erlang，推荐使用rabbitMQ推荐的网址 https://www.erlang-solutions.com/resources/download.html
+
+  安装完成后记得添加环境变量。
+
+- 安装完成后，进入RabbitMQ安装目录下的sbin目录：
+
+  cmd
+
+  ```shell
+  rabbitmq-plugins enable rabbitmq_management
+  ```
+
+- 访问地址 http://lcoalhost:15672 用户名和密码都是guest
+
+## 动态刷新配置
+
+> 这里使用上一节的config-server和config-client
+
+### 给config-server添加消息总线支持
+
+- 在pom.xml中添加相关依赖：
+
+  ```xml
+  <!--        添加消息总线支持-->
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+          </dependency>
+          <dependency>
+              <groupId>org.springframework.boot</groupId>
+              <artifactId>spring-boot-starter-actuator</artifactId>
+          </dependency>
+  ```
+
+- 添加配置文件application-amqp.yml，主要是添加了RabbitMQ的配置及暴露了刷新配置的Actuator端点；
+
+  ```yaml
+  server:
+    port: 8017
+  spring:
+    application:
+      name: config-server
+    cloud:
+      config:
+        server:
+          git: # 配置存储信息的git仓库
+            uri: https://github.com/YanLdt/springcloud-config.git
+            username: YanLdt
+            password: datouwudi233
+            clone-on-start: true # 开启启动时自动从git获取配置
+  #          search-paths: '{application}'
+    rabbitmq: #配置rabbitmq
+      host: localhost
+      port: 5672
+      username: guest
+      password: guest
+  eureka:
+    client:
+      fetch-registry: true
+      register-with-eureka: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  management:
+    endpoints: # 暴露bus刷新配置的端点
+      web:
+        exposure:
+          include: 'bus-refresh'
+  ```
+
+  使用application-amqp-yml文件启动服务
+
+  ![image-20200730112809929](Spring Cloud.assets/image-20200730112809929.png)
+
+### 给config-client添加消息总线支持
+
+- 在pom.xml中添加相关依赖：
+
+  ```xml
+          <!--        添加消息总线支持-->
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+          </dependency>
+  ```
+
+- 添加配置文件bootstrap-amqp1.yml及bootstrap-amqp2.yml用于启动两个不同的config-client，两个配置文件只有端口号不同；
+
+  ```yaml
+  #amqp1
+  server:
+    port: 8018
+  spring:
+    application:
+      name: config-client
+    cloud:
+      config: # Config客户端配置
+        profile: dev # 启用配置后缀名称
+        label: dev # 分支名称
+        #      uri: http://localhost:8014/ # 配置中心地址
+        name: config #配置文件名称
+        discovery: # 表示从注册中心获取配置中心的地址
+          enabled: true
+          service-id: config-server
+  #      username: ly #配置安全中心账户密码
+  #      password: 5211
+    rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      password: guest
+  eureka:
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'refresh'
+  
+  #amqp2
+  server:
+    port: 8019
+  spring:
+    application:
+      name: config-client
+    cloud:
+      config: # Config客户端配置
+        profile: dev # 启用配置后缀名称
+        label: dev # 分支名称
+        #      uri: http://localhost:8014/ # 配置中心地址
+        name: config #配置文件名称
+        discovery: # 表示从注册中心获取配置中心的地址
+          enabled: true
+          service-id: config-server
+  #      username: ly #配置安全中心账户密码
+  #      password: 5211
+    rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      password: guest
+  eureka:
+    client:
+      register-with-eureka: true
+      fetch-registry: true
+      service-url:
+        defaultZone: http://localhost:8001/eureka/
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: 'refresh'
+  ```
+
+  > 指定bootstrap文件启动应用，在Program arguments里添加配置 `--spring.cloud.bootstrap.name=bootstrap-amqp1`
+
+  ![image-20200730113056677](Spring Cloud.assets/image-20200730113056677.png)
+
+### 动态刷新配置
+
+启动相关服务，启动eureka-server，以application-amqp.yml为配置启动config-server，以bootstrap-amqp1.yml为配置启动config-client，以bootstrap-amqp2.yml为配置再启动一个config-client
+
+启动所有服务后，我们登录RabbitMQ的控制台可以发现Spring Cloud Bus 创建了一个叫springCloudBus的交换机及三个以 springCloudBus.anonymous开头的队列：
+
+![image-20200730113305422](Spring Cloud.assets/image-20200730113305422.png)
+
+![image-20200730113327357](Spring Cloud.assets/image-20200730113327357.png)
+
+- 修改Git仓库中dev分支下的config-dev.yml配置文件：
+
+- 调用注册中心的接口刷新所有配置 http://localhost:8017/actuator/bus-refresh
+
+  ![image-20200730113551563](Spring Cloud.assets/image-20200730113551563.png)
+
+  可以看到rabbitMQ队列里是有消息消费的
+
+  ![image-20200730113743389](Spring Cloud.assets/image-20200730113743389.png)
+
+- 即可在client端读取最新配置信息
+
+- 如果只需要刷新指定实例的配置可以使用以下格式进行刷新：http://localhost:8017/actuator/bus-refresh/{destination} ，我们这里以刷新运行在8018端口上的config-client为例http://localhost:8017/actuator/bus-refresh/config-client:8018。
+
+## 配合WebHooks使用
+
+WebHooks相当于是一个钩子函数，我们可以配置当向Git仓库push代码时触发这个钩子函数
+
+![img](Spring Cloud.assets/16dd48b117c053.png)
+
+-----
 

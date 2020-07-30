@@ -44,6 +44,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!--        添加消息总线支持-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
+
+
         <!--集成swagger以及UI-->
         <dependency>
             <groupId>io.springfox</groupId>

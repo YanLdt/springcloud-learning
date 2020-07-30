@@ -9,7 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
         <module name="config-client" />
-        <module name="user-service" />
+        <module name="config-security-server" />
         <module name="ribbon-service" />
         <module name="hystrix-service" />
         <module name="zuul-proxy" />
@@ -17,8 +17,8 @@
         <module name="turbine-service" />
         <module name="springcloud-learning" />
         <module name="eureka-security-server" />
-        <module name="config-security-server" />
         <module name="eureka-server" />
+        <module name="user-service" />
         <module name="learning" />
         <module name="hystrix-dashboard" />
         <module name="feign-service" />

@@ -1,0 +1,30 @@
+server:
+  port: 8017
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git: # 配置存储信息的git仓库
+          uri: https://github.com/YanLdt/springcloud-config.git
+          username: YanLdt
+          password: datouwudi233
+          clone-on-start: true # 开启启动时自动从git获取配置
+#          search-paths: '{application}'
+  rabbitmq: #配置rabbitmq
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8001/eureka/
+management:
+  endpoints: # 暴露bus刷新配置的端点
+    web:
+      exposure:
+        include: 'bus-refresh'
