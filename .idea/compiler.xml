@@ -13,15 +13,18 @@
         <module name="ribbon-service" />
         <module name="hystrix-service" />
         <module name="zuul-proxy" />
+        <module name="consul-ribbon-service" />
         <module name="eureka-client" />
         <module name="turbine-service" />
         <module name="springcloud-learning" />
         <module name="eureka-security-server" />
         <module name="eureka-server" />
+        <module name="consul-config-client" />
         <module name="user-service" />
         <module name="learning" />
         <module name="hystrix-dashboard" />
         <module name="feign-service" />
+        <module name="consul-user-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -30,6 +33,9 @@
       <module name="config-client" options="-parameters" />
       <module name="config-security-server" options="-parameters" />
       <module name="config-server" options="-parameters" />
+      <module name="consul-config-client" options="-parameters" />
+      <module name="consul-ribbon-service" options="-parameters" />
+      <module name="consul-user-service" options="-parameters" />
       <module name="eureka-client" options="-parameters" />
       <module name="eureka-security-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />

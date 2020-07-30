@@ -3066,3 +3066,185 @@ Spring Cloud Sleuth 是分布式系统中跟踪服务间调用的工具，它可
 
 ---
 
+# Spring Cloud Consul：服务治理与配置中心
+
+## Consul简介
+
+Consul是HashiCorp公司推出的开源软件，提供了微服务系统中的服务治理、配置中心、控制总线等功能。这些功能中的每一个都可以根据需要单独使用，也可以一起使用以构建全方位的服务网格，总之Consul提供了一种完整的服务网格解决方案。
+
+Spring Cloud Consul 具有如下特性：
+
+- 支持服务治理：Consul作为注册中心时，微服务中的应用可以向Consul注册自己，并且可以从Consul获取其他应用信息；
+- 支持客户端负责均衡：包括Ribbon和Spring Cloud LoadBalancer；
+- 支持Zuul：当Zuul作为网关时，可以从Consul中注册和发现应用；
+- 支持分布式配置管理：Consul作为配置中心时，使用键值对来存储配置信息；
+- 支持控制总线：可以在整个微服务系统中通过 Control Bus 分发事件消息。
+
+## 使用Consul作为注册中心
+
+### 安装并运行Consul
+
+- 从官网下载Consul，地址：https://www.consul.io/downloads.html
+
+- 在命令行中输入以下命令可以查看版本号：
+
+  ```
+  consul --version
+  ```
+
+- 使用开发模式启动：
+
+  ```
+  consul agent -dev
+  ```
+
+- 通过以下地址可以访问Consul的首页：http://localhost:8500
+
+  ![image-20200730155345049](Spring Cloud.assets/image-20200730155345049.png)
+
+### 创建应用注册到Consul
+
+> 从user-service和ribbon-service新建两个模块 consul-user-service和consul-ribbon-service，将原来的Eureka注册中心改为Consul注册中心。
+
+- 修改相关依赖，并添加SpringBoot Actuator的依赖
+
+  ```xml
+  <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+  </dependency>
+  ```
+
+- 修改配置文件 application.yml，将Eureka的注册中心改为Consul。
+
+  ```yaml
+  server:
+    port: 9004
+  spring:
+    application:
+      name: consul-user-service
+    #    name: user-service
+  #  zipkin: # 设置zipkin-server访问地址
+  #    base-url: http://localhost:9411
+  #  sleuth:
+  #    sampler:
+  #      probability: 0.1 # 设置Sleuth的抽样收集概率
+    cloud: # 添加consul地址
+      consul:
+        host: localhost
+        port: 8500
+        discovery:
+          service-name: ${spring.application.name}
+  ```
+
+- 运行两个user-service和ribbon-service。
+
+  ![image-20200730170143804](Spring Cloud.assets/image-20200730170143804.png)
+
+### 负载均衡
+
+- 多次调用consul-ribbon-service的接口，发现两个consul-user-service交替打印日志。
+
+## 使用Consul作为配置中心
+
+### 创建consul-config-client模块
+
+- 在pom.xml中添加相关依赖：
+
+  ```xml
+  <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-consul-config</artifactId>
+  </dependency>
+  <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+  </dependency>
+  ```
+
+- 添加配置文件application.yml，启用的是dev环境的配置：
+
+  ```yaml
+  spring:
+    profiles:
+      active: dev
+  ```
+
+- 添加配置文件bootstrap.yml，主要是对Consul的配置功能进行配置：
+
+  ```yaml
+  server:
+    port: 9101
+  spring:
+    application:
+      name: consul-config-client
+    cloud:
+      consul:
+        host: localhost
+        port: 8500
+        discovery:
+          service-name: ${spring.application.name}
+        config:
+          enabled: true # 是否开启配置中心功能
+          format: yaml # 设置配置值的格式
+          prefix: config # 设置配置所在目录
+          profile-separator: ':' # 设置配置的分隔符
+          data-key: data # 设置key的名字
+  ```
+
+- 创建ConsulConfigClientController，从Consul配置中心中获取配置信息：
+
+  ```java
+  package com.yanl.cloud.controller;
+  
+  import org.springframework.beans.factory.annotation.Value;
+  import org.springframework.cloud.context.config.annotation.RefreshScope;
+  import org.springframework.web.bind.annotation.GetMapping;
+  import org.springframework.web.bind.annotation.RestController;
+  
+  @RestController
+  @RefreshScope
+  public class ConsulConfigClientController {
+  
+      @Value("${config.info}")
+      private String configInfo;
+  
+      @GetMapping("/getConfigInfo")
+      public String getConfigInfo(){
+          return configInfo;
+      }
+  }
+  
+  ```
+
+### 在Consul中添加配置
+
+- 在consul中添加配置存储的key为:
+
+  ```
+  config/consul-config-client:dev/data
+  ```
+
+- 在consul中添加配置存储的value为：
+
+  ```yaml
+  config:
+    info: "config info for dev"
+  ```
+
+  ![image-20200730175750848](Spring Cloud.assets/image-20200730175750848.png)
+
+- 启动consul-config-client，调用接口查看配置信息
+
+  ![image-20200730175825502](Spring Cloud.assets/image-20200730175825502.png)
+
+### Consul的动态刷新配置
+
+只要修改下Consul中的配置信息，再次调用查看配置的接口，就会发现配置已经刷新。在使用Spring Cloud Config的时候，需要调用接口，通过Spring Cloud Bus才能刷新配置。Consul使用其自带的Control Bus 实现了一种事件传递机制，从而实现了动态刷新功能。
+
+---
+

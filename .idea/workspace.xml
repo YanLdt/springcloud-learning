@@ -2,14 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0b67b6db-3d40-4db0-b2c7-b293f986b51d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/consul-config-client/src/main/java/com/yanl/cloud/config/SwaggerConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-config-client/src/main/java/com/yanl/cloud/controller/ConsulConfigClientController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-config-client/src/main/resources/bootstrap.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-ribbon-service/src/main/java/com/yanl/cloud/config/RibbonConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-ribbon-service/src/main/java/com/yanl/cloud/config/SwaggerConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-ribbon-service/src/main/java/com/yanl/cloud/controller/UserRibbonController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-ribbon-service/src/main/java/com/yanl/cloud/domain/CommonResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-ribbon-service/src/main/java/com/yanl/cloud/domain/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-user-service/src/main/java/com/yanl/cloud/config/SwaggerConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-user-service/src/main/java/com/yanl/cloud/controller/UserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-user-service/src/main/java/com/yanl/cloud/domain/CommonResult.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-user-service/src/main/java/com/yanl/cloud/domain/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-user-service/src/main/java/com/yanl/cloud/service/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/consul-user-service/src/main/java/com/yanl/cloud/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Spring Cloud.md" beforeDir="false" afterPath="$PROJECT_DIR$/Spring Cloud.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ribbon-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ribbon-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ribbon-service/src/main/java/com/yanl/cloud/controller/UserRibbonController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ribbon-service/src/main/java/com/yanl/cloud/controller/UserRibbonController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ribbon-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ribbon-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/java/com/yanl/cloud/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/java/com/yanl/cloud/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/user-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,36 +64,32 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/config-client/src/main/resources" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/consul-ribbon-service/src/main/java/com/yanl/cloud" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.tabs" />
   </component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\ly\springcloud\learning\eureka-server\src\main\resources" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\ly\springcloud-learning\consul-ribbon-service\src\main\java\com\yanl\cloud" />
+      <recent name="E:\ly\springcloud-learning\consul-user-service\src\main\java\com\yanl\cloud" />
+      <recent name="E:\ly\springcloud-learning\config-client\src\main\resources" />
+      <recent name="E:\ly\springcloud-learning\feign-service\src\main\java\com\yanl\cloud" />
+      <recent name="E:\ly\springcloud-learning\hystrix-service\src\main\resources" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.yanl.cloud.config" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\ly\springcloud-learning\config-client\src\main\resources" />
-      <recent name="E:\ly\springcloud-learning\feign-service\src\main\java\com\yanl\cloud" />
-      <recent name="E:\ly\springcloud-learning\hystrix-service\src\main\resources" />
-      <recent name="E:\ly\springcloud-learning\hystrix-service\src\main\java\com\yanl\cloud" />
-      <recent name="E:\ly\springcloud\learning\ribbon-service\src\main\java\com\yanl\cloud" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\ly\springcloud\learning\eureka-server\src\main\resources" />
     </key>
   </component>
   <component name="RestServicesNavigator">
     <treeState>
       <expand>
         <path>
-          <item name="Found 24 services " type="fcff1e1b:RestServiceStructure$RootNode" />
-        </path>
-        <path>
-          <item name="Found 24 services " type="fcff1e1b:RestServiceStructure$RootNode" />
-          <item name="ribbon-service" type="c588b436:RestServiceStructure$ProjectNode" />
+          <item name="Found 36 services " type="fcff1e1b:RestServiceStructure$RootNode" />
         </path>
       </expand>
       <select />
@@ -95,7 +102,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ConfigServerApplication-amqp-8017">
+  <component name="RunManager" selected="Spring Boot.ConsulConfigClientApplication-9101">
     <configuration name="ConfigClientApplication-amqp1-8018" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="config-client" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConfigClientApplication" />
@@ -171,6 +178,45 @@
     <configuration name="ConfigServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="config-server" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConfigServerApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConsulConfigClientApplication-9101" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="consul-config-client" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConsulConfigClientApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConsulRibbonServiceApplication-8005" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="consul-ribbon-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConsulRibbonServiceApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConsulUserServiceApplication-9004" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="consul-user-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConsulUserServiceApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConsulUserServiceApplication-9005" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="consul-user-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.yanl.cloud.ConsulUserServiceApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <additionalParameters>
+        <param>
+          <option name="enabled" value="true" />
+          <option name="name" value="server.port" />
+          <option name="value" value="9005" />
+        </param>
+      </additionalParameters>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -307,6 +353,7 @@
     </configuration>
     <list>
       <item itemvalue="Spring Boot.EurekaClientApplication" />
+      <item itemvalue="Spring Boot.UserServiceApplication" />
       <item itemvalue="Spring Boot.ConfigClientApplication-cluster" />
       <item itemvalue="Spring Boot.ConfigClientApplication-amqp1-8018" />
       <item itemvalue="Spring Boot.ConfigClientApplication-amqp2-8019" />
@@ -317,7 +364,6 @@
       <item itemvalue="Spring Boot.EurekaServerApplication-replica1" />
       <item itemvalue="Spring Boot.EurekaServerApplication-replica2" />
       <item itemvalue="Spring Boot.EurekaSecurityServerApplication" />
-      <item itemvalue="Spring Boot.UserServiceApplication" />
       <item itemvalue="Spring Boot.UserServiceApplication (1)" />
       <item itemvalue="Spring Boot.RibbonServiceApplication" />
       <item itemvalue="Spring Boot.HystrixServiceApplication" />
@@ -330,13 +376,17 @@
       <item itemvalue="Spring Boot.ConfigServerApplication-8015" />
       <item itemvalue="Spring Boot.ConfigClientApplication" />
       <item itemvalue="Spring Boot.ConfigSecurityServerApplication" />
+      <item itemvalue="Spring Boot.ConsulUserServiceApplication-9004" />
+      <item itemvalue="Spring Boot.ConsulUserServiceApplication-9005" />
+      <item itemvalue="Spring Boot.ConsulRibbonServiceApplication-8005" />
+      <item itemvalue="Spring Boot.ConsulConfigClientApplication-9101" />
     </list>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
       <list>
         <serviceView>
-          <option name="contentProportion" value="0.22295322" />
+          <option name="contentProportion" value="0.28216374" />
           <treeState>
             <expand>
               <path>
@@ -347,6 +397,11 @@
                 <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
                 <item name="Spring Boot" type="7427dc5b:ServiceModel$ServiceGroupNode" />
                 <item name="Running" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              </path>
+              <path>
+                <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+                <item name="Spring Boot" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+                <item name="Finished" type="7427dc5b:ServiceModel$ServiceGroupNode" />
               </path>
               <path>
                 <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
@@ -382,7 +437,8 @@
       <workItem from="1596073109937" duration="418000" />
       <workItem from="1596073572587" duration="10318000" />
       <workItem from="1596092039440" duration="204000" />
-      <workItem from="1596092538016" duration="1440000" />
+      <workItem from="1596092538016" duration="2374000" />
+      <workItem from="1596096271007" duration="5319000" />
     </task>
     <servers />
   </component>
@@ -390,10 +446,10 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="292" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596085552144">
+    <state x="292" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596100870135">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="292" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.870@0.0.1440.870" timestamp="1596085552144" />
+    <state x="292" y="146" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.870@0.0.1440.870" timestamp="1596100870135" />
     <state x="525" y="144" key="#com.intellij.ide.util.MemberChooser" timestamp="1596003798819">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
@@ -402,38 +458,38 @@
       <screen x="0" y="0" width="1440" height="870" />
     </state>
     <state x="500" y="189" key="FileChooserDialogImpl/0.0.1440.870@0.0.1440.870" timestamp="1595834030745" />
-    <state width="1100" height="245" key="GridCell.Tab.0.bottom" timestamp="1596092722991">
+    <state width="981" height="256" key="GridCell.Tab.0.bottom" timestamp="1596101062190">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.0.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596092722991" />
-    <state width="1100" height="245" key="GridCell.Tab.0.center" timestamp="1596092722990">
+    <state width="981" height="256" key="GridCell.Tab.0.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596101062190" />
+    <state width="981" height="256" key="GridCell.Tab.0.center" timestamp="1596101062189">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.0.center/0.0.1440.870@0.0.1440.870" timestamp="1596092722990" />
-    <state width="1100" height="245" key="GridCell.Tab.0.left" timestamp="1596092722990">
+    <state width="981" height="256" key="GridCell.Tab.0.center/0.0.1440.870@0.0.1440.870" timestamp="1596101062189" />
+    <state width="981" height="256" key="GridCell.Tab.0.left" timestamp="1596101062189">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.0.left/0.0.1440.870@0.0.1440.870" timestamp="1596092722990" />
-    <state width="1100" height="245" key="GridCell.Tab.0.right" timestamp="1596092722991">
+    <state width="981" height="256" key="GridCell.Tab.0.left/0.0.1440.870@0.0.1440.870" timestamp="1596101062189" />
+    <state width="981" height="256" key="GridCell.Tab.0.right" timestamp="1596101062189">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.0.right/0.0.1440.870@0.0.1440.870" timestamp="1596092722991" />
-    <state width="1100" height="245" key="GridCell.Tab.1.bottom" timestamp="1596092722992">
+    <state width="981" height="256" key="GridCell.Tab.0.right/0.0.1440.870@0.0.1440.870" timestamp="1596101062189" />
+    <state width="981" height="256" key="GridCell.Tab.1.bottom" timestamp="1596101062190">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.1.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596092722992" />
-    <state width="1100" height="245" key="GridCell.Tab.1.center" timestamp="1596092722991">
+    <state width="981" height="256" key="GridCell.Tab.1.bottom/0.0.1440.870@0.0.1440.870" timestamp="1596101062190" />
+    <state width="981" height="256" key="GridCell.Tab.1.center" timestamp="1596101062190">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.1.center/0.0.1440.870@0.0.1440.870" timestamp="1596092722991" />
-    <state width="1100" height="245" key="GridCell.Tab.1.left" timestamp="1596092722991">
+    <state width="981" height="256" key="GridCell.Tab.1.center/0.0.1440.870@0.0.1440.870" timestamp="1596101062190" />
+    <state width="981" height="256" key="GridCell.Tab.1.left" timestamp="1596101062190">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.1.left/0.0.1440.870@0.0.1440.870" timestamp="1596092722991" />
-    <state width="1100" height="245" key="GridCell.Tab.1.right" timestamp="1596092722991">
+    <state width="981" height="256" key="GridCell.Tab.1.left/0.0.1440.870@0.0.1440.870" timestamp="1596101062190" />
+    <state width="981" height="256" key="GridCell.Tab.1.right" timestamp="1596101062190">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state width="1100" height="245" key="GridCell.Tab.1.right/0.0.1440.870@0.0.1440.870" timestamp="1596092722991" />
+    <state width="981" height="256" key="GridCell.Tab.1.right/0.0.1440.870@0.0.1440.870" timestamp="1596101062190" />
     <state width="1100" height="245" key="GridCell.Tab.2.bottom" timestamp="1596090089526">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
@@ -458,25 +514,25 @@
       <screen x="0" y="0" width="1440" height="870" />
     </state>
     <state width="728" height="443" key="XDebugger.FullValuePopup/0.0.1440.870@0.0.1440.870" timestamp="1596089957934" />
-    <state x="400" y="258" key="com.intellij.ide.util.TipDialog" timestamp="1596092540275">
+    <state x="400" y="258" key="com.intellij.ide.util.TipDialog" timestamp="1596096269257">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="400" y="258" key="com.intellij.ide.util.TipDialog/0.0.1440.870@0.0.1440.870" timestamp="1596092540275" />
+    <state x="400" y="258" key="com.intellij.ide.util.TipDialog/0.0.1440.870@0.0.1440.870" timestamp="1596096269257" />
     <state x="396" y="34" width="647" height="801" key="find.popup" timestamp="1595927921598">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
     <state x="396" y="34" width="647" height="801" key="find.popup/0.0.1440.870@0.0.1440.870" timestamp="1595927921598" />
-    <state x="94" y="129" key="new project wizard" timestamp="1596014815457">
+    <state x="94" y="129" key="new project wizard" timestamp="1596100125601">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="94" y="129" key="new project wizard/0.0.1440.870@0.0.1440.870" timestamp="1596014815457" />
-    <state x="376" y="198" key="run.anything.popup" timestamp="1596088097537">
+    <state x="94" y="129" key="new project wizard/0.0.1440.870@0.0.1440.870" timestamp="1596100125601" />
+    <state x="376" y="198" key="run.anything.popup" timestamp="1596097396713">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="376" y="198" key="run.anything.popup/0.0.1440.870@0.0.1440.870" timestamp="1596088097537" />
-    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup" timestamp="1596077375720">
+    <state x="376" y="198" key="run.anything.popup/0.0.1440.870@0.0.1440.870" timestamp="1596097396713" />
+    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup" timestamp="1596100523270">
       <screen x="0" y="0" width="1440" height="870" />
     </state>
-    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup/0.0.1440.870@0.0.1440.870" timestamp="1596077375720" />
+    <state x="383" y="191" width="672" height="678" key="search.everywhere.popup/0.0.1440.870@0.0.1440.870" timestamp="1596100523270" />
   </component>
 </project>

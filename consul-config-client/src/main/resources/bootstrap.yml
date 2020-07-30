@@ -1,0 +1,17 @@
+server:
+  port: 9101
+spring:
+  application:
+    name: consul-config-client
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+      config:
+        enabled: true # 是否开启配置中心功能
+        format: yaml # 设置配置值的格式
+        prefix: config # 设置配置所在目录
+        profile-separator: ':' # 设置配置的分隔符
+        data-key: data # 设置key的名字
