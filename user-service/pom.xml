@@ -57,6 +57,11 @@
             <version>2.6.1</version>
         </dependency>
 
+<!--        添加请求链路追踪依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency>
 
 
         <dependency>

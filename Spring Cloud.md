@@ -2967,3 +2967,102 @@ WebHooks相当于是一个钩子函数，我们可以配置当向Git仓库push�
 
 -----
 
+# Spring Cloud Sleuth：分布式请求链路跟踪
+
+## Spring Cloud Sleuth简介
+
+Spring Cloud Sleuth 是分布式系统中跟踪服务间调用的工具，它可以直观地展示出一次请求的调用过程。
+
+随着我们的系统越来越庞大，各个服务间的调用关系也变得越来越复杂。当客户端发起一个请求时，这个请求经过多个服务后，最终返回了结果，经过的每一个服务都有可能发生延迟或错误，从而导致请求失败。这时候我们就需要请求链路跟踪工具来帮助我们，理清请求调用的服务链路，解决问题。
+
+## 给服务添加请求链路追踪
+
+通过user-service和ribbon-service之间的服务调用来演示该功能，这里调用ribbon-service的接口时，ribbon-service会通过RestTemplate来调用user-service提供的接口。
+
+- 首先给user-service和ribbon-service添加请求链路跟踪功能的支持；
+
+- 在user-service和ribbon-service中添加相关依赖：
+
+  ```xml
+          <!--        添加请求链路追踪依赖-->
+          <dependency>
+              <groupId>org.springframework.cloud</groupId>
+              <artifactId>spring-cloud-starter-zipkin</artifactId>
+          </dependency>
+  ```
+
+- 修改application.yml文件，配置收集日志的zipkin-server访问地址：
+
+  ```yaml
+  spring:
+    zipkin: # 设置zipkin-server访问地址
+      base-url: http://localhost:9411
+    sleuth:
+      sampler:
+        probability: 0.1 #设置Sleuth的抽样收集概率
+  ```
+
+## 整合Zipkin获取及分析日志
+
+> Zipkin是Twitter的一个开源项目，可以用来获取和分析Spring Cloud Sleuth 中产生的请求链路跟踪日志，它提供了Web界面来帮助我们直观地查看请求链路跟踪信息。
+
+- SpringBoot 2.0以上版本已经不需要自行搭建zipkin-server，我们可以从该地址下载zipkin-server：https://repo1.maven.org/maven2/io/zipkin/java/zipkin-server/2.12.9/zipkin-server-2.12.9-exec.jar
+
+- 下载完成后使用以下命令运行zipkin-server：
+
+  ```txt
+  java -jar zipkin-server-2.12.9-exec.jar
+  ```
+
+- Zipkin页面访问地址：http://localhost:9411
+
+- 启动eureka-sever，ribbon-service，user-service：
+
+- 访问几次ribbon-service接口
+
+  ![image-20200730151944795](Spring Cloud.assets/image-20200730151944795.png)
+
+- 点击查看详情可以直观地看到请求调用链路和通过每个服务的耗时：
+
+  ![image-20200730152103815](Spring Cloud.assets/image-20200730152103815.png)
+
+  ![image-20200730152114922](Spring Cloud.assets/image-20200730152114922.png)
+
+## 使用Elasticsearch存储跟踪信息
+
+如果我们把zipkin-server重启一下就会发现刚刚的存储的跟踪信息全部丢失了，可见其是存储在内存中的，有时候我们需要将所有信息存储下来，这里把信息存储到Elasticsearch。
+
+### 安装Elasticsearch
+
+- 下载Elasticsearch6.2.2的zip包，并解压到指定目录，下载地址：https://www.elastic.co/cn/downloads/past-releases/elasticsearch-6-2-2
+- 运行bin目录下的elasticsearch.bat启动Elasticsearch
+
+### 修改Zipkin启动参数将信息存储到Elasticsearch
+
+- 使用以下命令运行，就可以把跟踪信息存储到Elasticsearch里面去了，重新启动也不会丢失；
+
+  ```
+  # STORAGE_TYPE：表示存储类型 ES_HOSTS：表示ES的访问地址
+  java -jar zipkin-server-2.12.9-exec.jar --STORAGE_TYPE=elasticsearch --ES_HOSTS=localhost:9200 
+  ```
+
+- 之后需要重新启动user-service和ribbon-service才能生效
+
+### 安装Kibana可视化工具查看跟踪信息
+
+- 下载Kibana6.2.2的zip包，并解压到指定目录，下载地址：https://artifacts.elastic.co/downloads/kibana/kibana-6.2.2-windows-x86_64.zip
+
+- 解压，会创建一个文件夹叫 kibana-6.6.0-windows-x86_64，也就是我们指的 `$KIBANA_HOME` 。删除多余的字符，保留kibana
+
+- `.zip` 整个包是独立的。默认情况下，所有的文件和目录都在 `$KIBANA_HOME` — 解压包时创建的目录下。这是非常方便的，因为您不需要创建任何目录来使用 Kibana，卸载 Kibana 只需要简单的删除 `$KIBANA_HOME`目录。但还是建议修改一下配置文件和数据目录，这样就不会删除重要数据。
+
+- 通过配置文件配置 Kibana。Kibana 默认情况下从 `$KIBANA_HOME/config/kibana.yml` 加载配置文件。***\*设置`elasticsearch.url`为指向您的Elasticsearch实例\****
+
+- 双击 bin\kibana.bat，默认情况下，Kibana 在前台启动，输出 log 到 `STDOUT` ，可以通过 `Ctrl-C` 停止 Kibana。
+
+- 访问 http://localhost:5601
+
+  ![image-20200730152909131](Spring Cloud.assets/image-20200730152909131.png)
+
+---
+

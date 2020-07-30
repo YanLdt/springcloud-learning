@@ -23,13 +23,18 @@ public class UserRibbonController {
         return restTemplate.getForObject(userServiceUrl + "/user/{1}", CommonResult.class, id);
     }
 
+    /**
+     *
+     * @param username 参数必须与user-service保持一致
+     * @return
+     */
     @GetMapping("/getByUserName")
-    public CommonResult getByUserName(@RequestParam String username){
+    public CommonResult getByUserName(String username){
         return restTemplate.getForObject(userServiceUrl +"/user/getUserByName?username={1}", CommonResult.class, username);
     }
 
     @GetMapping("/getEntityByUserName")
-    public CommonResult getEntityByUserName(@RequestParam String username){
+    public CommonResult getEntityByUserName(String username){
         ResponseEntity<CommonResult> entity = restTemplate.getForEntity(userServiceUrl + "/user/getUserByName?username={1}", CommonResult.class, username);
         if(entity.getStatusCode().is2xxSuccessful()){
             return entity.getBody();
